@@ -23,9 +23,9 @@ def show_matrix_plot(x, y):
     scaler.fit(x)
     scaled_x = scaler.transform(x)
     df_scaled_x = pd.DataFrame(data=scaled_x, index=x.index, columns=x.columns)
-    df_scaled_x["ethnicity"] = y
+    df_scaled_x["Class"] = y
     print(df_scaled_x)
-    g = sns.PairGrid(df_scaled_x, hue="ethnicity", palette="colorblind", corner=True)
+    g = sns.PairGrid(df_scaled_x, hue="Class", palette="colorblind", corner=True)
     g.map_diag(sns.kdeplot)
     g.map_lower(sns.scatterplot)
     g.add_legend(bbox_to_anchor=(0.4, 0.8), title="Etnikum")
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     NN = False
     RF = False
     PCA_GO = True
-    df = pd.read_csv("data/cartridges_75_75_50.txt", sep="\t", header=0, index_col=0)
+    df = pd.read_csv("data/Section_3.6_standard.txt", sep="\t", header=0, index_col=0)
 
     X = df.drop("Class", axis=1)
     Y = df["Class"]
