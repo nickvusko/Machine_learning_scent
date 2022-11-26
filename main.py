@@ -6,6 +6,7 @@ from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.preprocessing import StandardScaler
 from nearest_neighbors_scent import KNNClassify, KNNGridSearch, RNNClassify, RNNGridSearch
 from random_forest_scent import RFGridSearch, RFClassify
+from pca_scent import PCARun
 
 
 def plot_matrix(y, y_pred):
@@ -34,11 +35,12 @@ def show_matrix_plot(x, y):
 
 if __name__ == "__main__":
     NN = False
-    RF = True
-    df = pd.read_csv("data/ratio_area_30.txt", sep="\t", header=0, index_col=0)
+    RF = False
+    PCA_GO = True
+    df = pd.read_csv("data/cartridges_75_75_50.txt", sep="\t", header=0, index_col=0)
 
-    X = df.drop("ethnicity", axis=1)
-    Y = df["ethnicity"]
+    X = df.drop("Class", axis=1)
+    Y = df["Class"]
 
     X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=42)
 
@@ -60,6 +62,9 @@ if __name__ == "__main__":
         rf_model_best_params = RFGridSearch(X_train, X_test, y_train).run_rf()
         rf_pred = RFClassify(X_train, X_test, y_train, rf_model_best_params["n_estimators"],
                              rf_model_best_params["max_features"], rf_model_best_params["bootstrap"],
-                             rf_model_best_params["oob_score"]).run_rf
+                             rf_model_best_params["oob_score"]).run_rf()
         print(f"Random Forest classification:\n{classification_report(y_test, rf_pred)}")
         plot_matrix(y_test, rf_pred)
+
+    if PCA_GO:
+        PCA_best_params = PCARun(X, Y, 7).run_pca()
