@@ -10,6 +10,13 @@ from pca_scent import PCARun
 
 
 def plot_matrix(y, y_pred):
+    """
+    Plot confusion matrix.
+
+    :param y: true class tags
+    :param y_pred: predicted class tags
+    :return: None
+    """
     df_cm = pd.DataFrame(confusion_matrix(y, y_pred), index=[],
                          columns=[])  # edit input names of confusion matrix
     s = sns.heatmap(df_cm, annot=True, cmap="viridis")
@@ -19,6 +26,15 @@ def plot_matrix(y, y_pred):
 
 
 def show_matrix_plot(x, y):
+    """
+    Show exploratory matrix.
+    On the diagonal, KDE plot are displayed.
+    The lower triangle displays scatter plots between variables.
+
+    :param x: variables
+    :param y: class tags
+    :return: None
+    """
     scaler = StandardScaler()
     scaler.fit(x)
     scaled_x = scaler.transform(x)

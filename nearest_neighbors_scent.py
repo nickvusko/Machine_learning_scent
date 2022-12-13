@@ -9,6 +9,13 @@ from sklearn.pipeline import Pipeline
 
 class KNNGridSearch:
     def __init__(self, x_train, x_test, y_train):
+        """
+        Perform Grid Search (parameter optimization) for K-NN.
+
+        :param x_train: training variables
+        :param x_test: variables for evaluation
+        :param y_train: training class tags
+        """
         self.x_train = x_train
         self.x_test = x_test
         self.y_train = y_train
@@ -16,7 +23,11 @@ class KNNGridSearch:
         self.knn = KNeighborsClassifier()
 
     def run_knn(self):
+        """
+        Run Grid Search.
 
+        :return: y_test predictions
+        """
         operations = [("scaler", self.scaler), ("knn", self.knn)]
 
         pipe = Pipeline(operations)
@@ -35,6 +46,15 @@ class KNNGridSearch:
 
 class KNNClassify:
     def __init__(self, x_train, x_test, y_train, n_neighbors, weights):
+        """
+        Apply KNN model to the data.
+
+        :param x_train: training variables
+        :param x_test: variables for evaluation
+        :param y_train: training class tags
+        :param n_neighbors: number of neighbors
+        :param weights: ["uniform", "distance"]
+        """
         self.x_train = x_train
         self.x_test = x_test
         self.y_train = y_train
@@ -44,7 +64,11 @@ class KNNClassify:
         self.knn = KNeighborsClassifier(n_neighbors=n_neighbors, weights=weights)
 
     def run_knn(self):
+        """
+        Run Grid Search.
 
+        :return: y_test predictions
+        """
         operations = [("scaler", self.scaler), ("rnn", self.knn)]
 
         pipe = Pipeline(operations)
@@ -56,6 +80,13 @@ class KNNClassify:
 
 class RNNGridSearch:
     def __init__(self, x_train, x_test, y_train):
+        """
+        Perform Grid Search (parameter optimization) for R-NN.
+
+        :param x_train: training variables
+        :param x_test: variables for evaluation
+        :param y_train: training class tags
+        """
         self.x_train = x_train
         self.x_test = x_test
         self.y_train = y_train
@@ -63,7 +94,11 @@ class RNNGridSearch:
         self.rnn = RadiusNeighborsClassifier()
 
     def run_rnn(self):
+        """
+        Run Grid Search.
 
+        :return: y_test predictions
+        """
         operations = [("scaler", self.scaler), ("rnn", self.rnn)]
 
         pipe = Pipeline(operations)
@@ -82,6 +117,15 @@ class RNNGridSearch:
 
 class RNNClassify:
     def __init__(self, x_train, x_test, y_train, radius, weights):
+        """
+        Apply RNN model to the data.
+
+        :param x_train: training variables
+        :param x_test: variables for evaluation
+        :param y_train: training class tags
+        :param radius: radius for determining the class tag
+        :param weights: ["uniform", "distance"]
+        """
         self.x_train = x_train
         self.x_test = x_test
         self.y_train = y_train
@@ -89,7 +133,11 @@ class RNNClassify:
         self.rnn = RadiusNeighborsClassifier(radius=radius, weights=weights)
 
     def run_rnn(self):
+        """
+        Run Grid Search.
 
+        :return: y_test predictions
+        """
         operations = [("scaler", self.scaler), ("rnn", self.rnn)]
 
         pipe = Pipeline(operations)
