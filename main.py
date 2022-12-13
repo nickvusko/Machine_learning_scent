@@ -10,11 +10,11 @@ from pca_scent import PCARun
 
 
 def plot_matrix(y, y_pred):
-    df_cm = pd.DataFrame(confusion_matrix(y, y_pred), index=["czech", "ind", "viet"],
-                         columns=["czech", "ind", "viet"])
+    df_cm = pd.DataFrame(confusion_matrix(y, y_pred), index=[],
+                         columns=[])  # edit input names of confusion matrix
     s = sns.heatmap(df_cm, annot=True, cmap="viridis")
-    s.set_ylabel("Etnicita")
-    s.set_xlabel("Přiřazená etnicita")
+    s.set_ylabel("")  # set y label
+    s.set_xlabel("")  # set x label
     plt.show()
 
 
@@ -28,7 +28,7 @@ def show_matrix_plot(x, y):
     g = sns.PairGrid(df_scaled_x, hue="Class", palette="colorblind", corner=True)
     g.map_diag(sns.kdeplot)
     g.map_lower(sns.scatterplot)
-    g.add_legend(bbox_to_anchor=(0.4, 0.8), title="Etnikum")
+    g.add_legend(bbox_to_anchor=(0.4, 0.8), title="")  # edit the title
     g.set(xlim=(-2.5, 1.5), ylim=(-2.5, 1.5))
     plt.show()
 
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     NN = False
     RF = False
     PCA_GO = True
-    df = pd.read_csv("data/Section_3.6_standard.txt", sep="\t", header=0, index_col=0)
+    df = pd.read_csv("", sep="\t", header=0, index_col=0)
 
     X = df.drop("Class", axis=1)
     Y = df["Class"]
