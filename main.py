@@ -34,8 +34,8 @@ def show_matrix_plot(x, y):
 
 
 if __name__ == "__main__":
-    NN = False
-    RF = False
+    NN = True
+    RF = True
     PCA_GO = True
     df = pd.read_csv("", sep="\t", header=0, index_col=0)
 
