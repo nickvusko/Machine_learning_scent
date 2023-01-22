@@ -2,6 +2,7 @@
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
+import joblib
 
 
 class RFGridSearch:
@@ -63,5 +64,7 @@ class RFClassify:
         :return: y_test predictions
         """
         self.rf.fit(self.x_train, self.y_train)
+
+        joblib.dump(self.rf, "rf_model.pkl")
 
         return self.rf.predict(self.x_test)

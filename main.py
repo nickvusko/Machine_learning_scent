@@ -2,11 +2,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import confusion_matrix, classification_report, mean_squared_error, mean_absolute_error
 from sklearn.preprocessing import StandardScaler
 from nearest_neighbors_scent import KNNClassify, KNNGridSearch, RNNClassify, RNNGridSearch
 from random_forest_scent import RFGridSearch, RFClassify
 from pca_scent import PCARun
+import joblib
 
 
 def plot_matrix(y, y_pred):
@@ -17,8 +18,8 @@ def plot_matrix(y, y_pred):
     :param y_pred: predicted class tags
     :return: None
     """
-    df_cm = pd.DataFrame(confusion_matrix(y, y_pred), index=[],
-                         columns=[])  # edit input names of confusion matrix
+    df_cm = pd.DataFrame(confusion_matrix(y, y_pred), index=["Vol1", "Vol2", "Vol3", "Vol4", "Vol5"],
+                         columns=["Vol1", "Vol2", "Vol3", "Vol4", "Vol5"])  # edit input names of confusion matrix
     s = sns.heatmap(df_cm, annot=True, cmap="viridis")
     s.set_ylabel("")  # set y label
     s.set_xlabel("")  # set x label
@@ -40,7 +41,6 @@ def show_matrix_plot(x, y):
     scaled_x = scaler.transform(x)
     df_scaled_x = pd.DataFrame(data=scaled_x, index=x.index, columns=x.columns)
     df_scaled_x["Class"] = y
-    print(df_scaled_x)
     g = sns.PairGrid(df_scaled_x, hue="Class", palette="colorblind", corner=True)
     g.map_diag(sns.kdeplot)
     g.map_lower(sns.scatterplot)
@@ -50,18 +50,18 @@ def show_matrix_plot(x, y):
 
 
 if __name__ == "__main__":
-    NN = True
-    RF = True
+    NN = False
+    RF = False
     PCA_GO = True
-    df = pd.read_csv("", sep="\t", header=0, index_col=0)
+    df = pd.read_csv("data/SCENT_SUMMARY.txt", sep="\t", header=0, index_col=0)
 
     X = df.drop("Class", axis=1)
     Y = df["Class"]
 
-    X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.25, random_state=42)
 
     if NN:
-        show_matrix_plot(X_train, y_train)
+        # show_matrix_plot(X_train, y_train)
         knn_model_best_params = KNNGridSearch(X_train, X_test, y_train).run_knn()
         rnn_model_best_params = RNNGridSearch(X_train, X_test, y_train).run_rnn()
 
@@ -69,9 +69,13 @@ if __name__ == "__main__":
                                knn_model_best_params["knn__weights"]).run_knn()
         rnn_pred = RNNClassify(X_train, X_test, y_train, rnn_model_best_params["rnn__radius"],
                                rnn_model_best_params["rnn__weights"]).run_rnn()
-        print(f"K-Nearest Neighbour:\n{classification_report(y_test, knn_pred)}")
+        print(f"K-Nearest Neighbour:\n{classification_report(y_test, knn_pred)},\nMean absolute error: "
+              f"{mean_absolute_error(y_test,knn_pred)}, \nMean squared error: "
+              f"{mean_squared_error(y_test,knn_pred)**0.5}")
         plot_matrix(y_test, knn_pred)
-        print(f"Radius Nearest Neighbour:\n{classification_report(y_test, rnn_pred)}")
+        print(f"Radius Nearest Neighbour:\n{classification_report(y_test, rnn_pred)},\nMean absolute error: "
+              f"{mean_absolute_error(y_test,rnn_pred)}, \nMean squared error: "
+              f"{mean_squared_error(y_test,rnn_pred)**0.5}")
         plot_matrix(y_test, rnn_pred)
 
     if RF:
@@ -79,8 +83,13 @@ if __name__ == "__main__":
         rf_pred = RFClassify(X_train, X_test, y_train, rf_model_best_params["n_estimators"],
                              rf_model_best_params["max_features"], rf_model_best_params["bootstrap"],
                              rf_model_best_params["oob_score"]).run_rf()
-        print(f"Random Forest classification:\n{classification_report(y_test, rf_pred)}")
+        print(f"Random Forest classification:\n{classification_report(y_test, rf_pred)}\nMean absolute error: "
+              f"{mean_absolute_error(y_test,rf_pred)}, \nMean squared error: "
+              f"{mean_squared_error(y_test,rf_pred)**0.5}")
+        print(rf_pred)
         plot_matrix(y_test, rf_pred)
 
     if PCA_GO:
-        PCA_best_params = PCARun(X, Y, 7).run_pca()
+        PCA_best_params = PCARun(X, Y, 3).run_pca()
+        df_PCA = pd.DataFrame(data=PCA_best_params, index=df.index, columns=[f"component:{x}" for x in range(1, 4)])
+        df_PCA.to_csv("PCA_transformed.txt", sep="\t")
