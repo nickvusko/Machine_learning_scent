@@ -18,8 +18,8 @@ def plot_matrix(y, y_pred):
     :param y_pred: predicted class tags
     :return: None
     """
-    df_cm = pd.DataFrame(confusion_matrix(y, y_pred), index=["Vol1", "Vol2", "Vol3", "Vol4", "Vol5"],
-                         columns=["Vol1", "Vol2", "Vol3", "Vol4", "Vol5"])  # edit input names of confusion matrix
+    df_cm = pd.DataFrame(confusion_matrix(y, y_pred), index=[""],
+                         columns=[""])  # edit input names of confusion matrix
     s = sns.heatmap(df_cm, annot=True, cmap="viridis")
     s.set_ylabel("")  # set y label
     s.set_xlabel("")  # set x label
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     NN = True
     RF = False
     PCA_GO = False
-    df = pd.read_csv("data/CARTRIDGE.txt", sep="\t", header=0, index_col=0)
+    df = pd.read_csv("", sep="\t", header=0, index_col=0)  # edit line - input file
 
     X = df.drop("Class", axis=1)
     Y = df["Class"]
@@ -94,4 +94,4 @@ if __name__ == "__main__":
     if PCA_GO:
         PCA_best_params = PCARun(X, Y, 3).run_pca()
         df_PCA = pd.DataFrame(data=PCA_best_params, index=df.index, columns=[f"component:{x}" for x in range(1, 4)])
-        df_PCA.to_csv("PCA_transformed_cartridges.txt", sep="\t")
+        df_PCA.to_csv("data/.txt", sep="\t")  # edit line - name of the output file
