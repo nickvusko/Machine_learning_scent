@@ -58,10 +58,10 @@ class PCARun:
         n_features = self.pca_scent.n_features_
         pc_loadings = dict(zip([f"PC{i}" for i in list(range(1, n_features+1))], loadings))
         loadings_df = pd.DataFrame.from_dict(pc_loadings)
-        loadings_df["features"] = [x for x in pd.read_csv("data/SCENT_SUMMARY.txt", sep="\t", header=0,
+        loadings_df["features"] = [x for x in pd.read_csv("data/CARTRIDGE.txt", sep="\t", header=0,
                                                           index_col=0).drop("Class", axis=1).columns]
         loadings_df = loadings_df.set_index("features")
-        loadings_df.to_csv("data/loadings_PCA.txt", sep="\t")
+        loadings_df.to_csv("data/loadings_PCA_cartridges.txt", sep="\t")
 
         xs = loadings[0]
         ys = loadings[1]

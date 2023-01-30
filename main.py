@@ -50,10 +50,10 @@ def show_matrix_plot(x, y):
 
 
 if __name__ == "__main__":
-    NN = False
+    NN = True
     RF = False
-    PCA_GO = True
-    df = pd.read_csv("data/SCENT_SUMMARY.txt", sep="\t", header=0, index_col=0)
+    PCA_GO = False
+    df = pd.read_csv("data/CARTRIDGE.txt", sep="\t", header=0, index_col=0)
 
     X = df.drop("Class", axis=1)
     Y = df["Class"]
@@ -72,10 +72,12 @@ if __name__ == "__main__":
         print(f"K-Nearest Neighbour:\n{classification_report(y_test, knn_pred)},\nMean absolute error: "
               f"{mean_absolute_error(y_test,knn_pred)}, \nMean squared error: "
               f"{mean_squared_error(y_test,knn_pred)**0.5}")
+        print(knn_pred)
         plot_matrix(y_test, knn_pred)
         print(f"Radius Nearest Neighbour:\n{classification_report(y_test, rnn_pred)},\nMean absolute error: "
               f"{mean_absolute_error(y_test,rnn_pred)}, \nMean squared error: "
               f"{mean_squared_error(y_test,rnn_pred)**0.5}")
+        print(rnn_pred)
         plot_matrix(y_test, rnn_pred)
 
     if RF:
@@ -92,4 +94,4 @@ if __name__ == "__main__":
     if PCA_GO:
         PCA_best_params = PCARun(X, Y, 3).run_pca()
         df_PCA = pd.DataFrame(data=PCA_best_params, index=df.index, columns=[f"component:{x}" for x in range(1, 4)])
-        df_PCA.to_csv("PCA_transformed.txt", sep="\t")
+        df_PCA.to_csv("PCA_transformed_cartridges.txt", sep="\t")
