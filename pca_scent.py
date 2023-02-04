@@ -1,5 +1,6 @@
 """Basic implementation of PCA algorithm"""
-
+import numpy as np
+import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
@@ -21,11 +22,11 @@ class PCARun:
 
         self.scaler = StandardScaler()
 
-    def run_pca(self):
+    def run_pca(self) -> np.array:
         """
         Run PCA analysis.
 
-        :return: None
+        :return: np.array
         """
         scaled_x = self.scaler.fit_transform(self.var)
         principal_components = self.pca_scent.fit_transform(scaled_x)
@@ -52,3 +53,41 @@ class PCARun:
         plt.xlabel('First Principal Component')  # edit X-axis label
         plt.ylabel('Second Principal Component')  # edit Y-axis label
         plt.show()
+
+        loadings = self.pca_scent.components_
+        n_features = self.pca_scent.n_features_
+        pc_loadings = dict(zip([f"PC{i}" for i in list(range(1, n_features+1))], loadings))
+        loadings_df = pd.DataFrame.from_dict(pc_loadings)
+        # get name of features (variables from original input file)
+        loadings_df["features"] = [x for x in pd.read_csv(".txt", sep="\t", header=0,  # edit line - input file
+                                                          index_col=0).drop("Class", axis=1).columns]
+        loadings_df = loadings_df.set_index("features")
+        loadings_df.to_csv("data/.txt", sep="\t")  # edit line - output file
+
+        xs = loadings[0]
+        ys = loadings[1]
+
+        # Plot the loadings on a scatterplot
+        for i, varnames in enumerate(loadings_df.index):
+            plt.scatter(xs[i], ys[i], s=200)
+            plt.arrow(
+                0, 0,  # coordinates of arrow base
+                xs[i],  # length of the arrow along x
+                ys[i],  # length of the arrow along y
+                color='b',
+                head_width=0.01
+            )
+            plt.text(xs[i], ys[i], varnames)
+
+        # Define the axes
+        xticks = np.linspace(-0.8, 0.8, num=5)
+        yticks = np.linspace(-0.8, 0.8, num=5)
+        plt.xticks(xticks)
+        plt.yticks(yticks)
+        plt.xlabel('PC1')
+        plt.ylabel('PC2')
+
+        # Show plot
+        plt.title('2D Loading plot')
+        plt.show()
+        return principal_components

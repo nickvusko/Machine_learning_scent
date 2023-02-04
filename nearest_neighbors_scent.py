@@ -5,6 +5,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier, RadiusNeighborsClassifier
 from sklearn.pipeline import Pipeline
+import joblib
 
 
 class KNNGridSearch:
@@ -75,6 +76,8 @@ class KNNClassify:
 
         pipe.fit(self.x_train, self.y_train)
 
+        joblib.dump(pipe, "knn_model.pkl")
+
         return pipe.predict(self.x_test)
 
 
@@ -103,7 +106,7 @@ class RNNGridSearch:
 
         pipe = Pipeline(operations)
 
-        param_grid = {"rnn__radius": list(range(1, 20)), "rnn__weights": ["uniform", "distance"]}
+        param_grid = {"rnn__radius": list(range(1, 100, 10)), "rnn__weights": ["uniform", "distance"]}
 
         full_cv_classifier = GridSearchCV(pipe, param_grid, cv=5, scoring='accuracy')
 
@@ -143,5 +146,7 @@ class RNNClassify:
         pipe = Pipeline(operations)
 
         pipe.fit(self.x_train, self.y_train)
+
+        joblib.dump(pipe, "rnn_model.pkl")
 
         return pipe.predict(self.x_test)

@@ -40,7 +40,6 @@ def show_matrix_plot(x, y):
     scaled_x = scaler.transform(x)
     df_scaled_x = pd.DataFrame(data=scaled_x, index=x.index, columns=x.columns)
     df_scaled_x["Class"] = y
-    print(df_scaled_x)
     g = sns.PairGrid(df_scaled_x, hue="Class", palette="colorblind", corner=True)
     g.map_diag(sns.kdeplot)
     g.map_lower(sns.scatterplot)
@@ -52,16 +51,16 @@ def show_matrix_plot(x, y):
 if __name__ == "__main__":
     NN = True
     RF = True
-    PCA_GO = True
-    df = pd.read_csv("", sep="\t", header=0, index_col=0)
+    PCA_GO = False
+    df = pd.read_csv("data/.txt", sep="\t", header=0, index_col=0)  # edit line - input file
 
     X = df.drop("Class", axis=1)
     Y = df["Class"]
 
-    X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.25, random_state=42)
 
     if NN:
-        show_matrix_plot(X_train, y_train)
+        # show_matrix_plot(X_train, y_train)
         knn_model_best_params = KNNGridSearch(X_train, X_test, y_train).run_knn()
         rnn_model_best_params = RNNGridSearch(X_train, X_test, y_train).run_rnn()
 
@@ -83,4 +82,6 @@ if __name__ == "__main__":
         plot_matrix(y_test, rf_pred)
 
     if PCA_GO:
-        PCA_best_params = PCARun(X, Y, 7).run_pca()
+        PCA_best_params = PCARun(X, Y, 3).run_pca()
+        df_PCA = pd.DataFrame(data=PCA_best_params, index=df.index, columns=[f"component:{x}" for x in range(1, 4)])
+        df_PCA.to_csv("data/.txt", sep="\t")  # edit line - name of the output file
