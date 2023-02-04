@@ -2,12 +2,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix, classification_report, mean_squared_error, mean_absolute_error
+from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.preprocessing import StandardScaler
 from nearest_neighbors_scent import KNNClassify, KNNGridSearch, RNNClassify, RNNGridSearch
 from random_forest_scent import RFGridSearch, RFClassify
 from pca_scent import PCARun
-import joblib
 
 
 def plot_matrix(y, y_pred):
@@ -18,8 +17,8 @@ def plot_matrix(y, y_pred):
     :param y_pred: predicted class tags
     :return: None
     """
-    df_cm = pd.DataFrame(confusion_matrix(y, y_pred), index=[""],
-                         columns=[""])  # edit input names of confusion matrix
+    df_cm = pd.DataFrame(confusion_matrix(y, y_pred), index=[],
+                         columns=[])  # edit input names of confusion matrix
     s = sns.heatmap(df_cm, annot=True, cmap="viridis")
     s.set_ylabel("")  # set y label
     s.set_xlabel("")  # set x label
@@ -51,9 +50,9 @@ def show_matrix_plot(x, y):
 
 if __name__ == "__main__":
     NN = True
-    RF = False
+    RF = True
     PCA_GO = False
-    df = pd.read_csv("", sep="\t", header=0, index_col=0)  # edit line - input file
+    df = pd.read_csv("data/.txt", sep="\t", header=0, index_col=0)  # edit line - input file
 
     X = df.drop("Class", axis=1)
     Y = df["Class"]
@@ -69,15 +68,9 @@ if __name__ == "__main__":
                                knn_model_best_params["knn__weights"]).run_knn()
         rnn_pred = RNNClassify(X_train, X_test, y_train, rnn_model_best_params["rnn__radius"],
                                rnn_model_best_params["rnn__weights"]).run_rnn()
-        print(f"K-Nearest Neighbour:\n{classification_report(y_test, knn_pred)},\nMean absolute error: "
-              f"{mean_absolute_error(y_test,knn_pred)}, \nMean squared error: "
-              f"{mean_squared_error(y_test,knn_pred)**0.5}")
-        print(knn_pred)
+        print(f"K-Nearest Neighbour:\n{classification_report(y_test, knn_pred)}")
         plot_matrix(y_test, knn_pred)
-        print(f"Radius Nearest Neighbour:\n{classification_report(y_test, rnn_pred)},\nMean absolute error: "
-              f"{mean_absolute_error(y_test,rnn_pred)}, \nMean squared error: "
-              f"{mean_squared_error(y_test,rnn_pred)**0.5}")
-        print(rnn_pred)
+        print(f"Radius Nearest Neighbour:\n{classification_report(y_test, rnn_pred)}")
         plot_matrix(y_test, rnn_pred)
 
     if RF:
@@ -85,10 +78,7 @@ if __name__ == "__main__":
         rf_pred = RFClassify(X_train, X_test, y_train, rf_model_best_params["n_estimators"],
                              rf_model_best_params["max_features"], rf_model_best_params["bootstrap"],
                              rf_model_best_params["oob_score"]).run_rf()
-        print(f"Random Forest classification:\n{classification_report(y_test, rf_pred)}\nMean absolute error: "
-              f"{mean_absolute_error(y_test,rf_pred)}, \nMean squared error: "
-              f"{mean_squared_error(y_test,rf_pred)**0.5}")
-        print(rf_pred)
+        print(f"Random Forest classification:\n{classification_report(y_test, rf_pred)}")
         plot_matrix(y_test, rf_pred)
 
     if PCA_GO:
